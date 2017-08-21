@@ -1,0 +1,32 @@
+.sub-menu--popup-fix > ul {
+    right: 7px;
+    left: auto !important;
+}
+
+.modal-body--no-padding .ant-modal-body {
+    padding: 0 !important;
+}
+
+.nav-brand {
+    color: grey;
+    transition: color .3s ease;
+    font-style: italic;
+    font-family: sans-serif;
+    padding-right: 10px;
+    font-size: 22px;
+}
+
+.nav-brand:hover {
+    color: white;
+}
+
+.dev_alert {
+    color: crimson !important;
+    animation: blinker 4s linear infinite;
+}
+
+@keyframes blinker {
+    50% {
+        opacity: 0;
+    }
+}

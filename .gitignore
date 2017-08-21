@@ -1,0 +1,6 @@
+.idea/
+node_modules/
+/tests/
+config/
+/dist
+*.log

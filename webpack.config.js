@@ -10,7 +10,7 @@ const path = require('path'),
 
     PRODUCTION = process.env.NODE_ENV === 'production';
 
-const plugins = [
+const PLUGINS = [
     new webpack.ProvidePlugin({
         'React': 'react'
     }),
@@ -41,20 +41,12 @@ const plugins = [
         ],
     }),
 
-    new BrowserSyncPlugin({
-        host: 'localhost',
-        port: 3001,
-        server: {
-            baseDir: [__dirname, 'dist'], middleware: [historyApiFallback()]
-        },
-    }, {reload: true}),
-
     new webpack.NoEmitOnErrorsPlugin(),
 ];
 
 
 PRODUCTION ?
-    plugins.unshift(
+    PLUGINS.unshift(
         new webpack.DefinePlugin({
             'process.env': {
                 'NODE_ENV': "'production'"
@@ -62,12 +54,32 @@ PRODUCTION ?
         }),
 
         new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                warnings: false
-            }
-        })
+            compressor: {
+                pure_getters: true,
+                unsafe: true,
+                unsafe_comps: true,
+                warnings: false,
+            },
+            output: {
+                comments: false,
+            },
+            sourceMap: false
+        }),
+
+        new webpack.optimize.AggressiveMergingPlugin()
     )
-    : null;
+
+    :
+
+    PLUGINS.push(
+        new BrowserSyncPlugin({
+            host: 'localhost',
+            port: 3001,
+            server: {
+                baseDir: [__dirname, 'dist'], middleware: [historyApiFallback()]
+            },
+        }, {reload: true})
+    );
 
 
 module.exports = {
@@ -102,20 +114,10 @@ module.exports = {
                 use: ['style-loader', 'css-loader']
             }, {
                 test: /\.less$/,
-                use: [{
-                    loader: "style-loader" // creates style nodes from JS strings
-                }, {
-                    loader: "css-loader" // translates CSS into CommonJS
-                }, {
-                    loader: "less-loader", options: {
-                        strictMath: true,
-                        noIeCompat: true,
-                        sourceMap: true
-                    }
-                }]
+                use: ['style-loader', 'css-loader', 'less-loader']
             }
         ]
     },
 
-    plugins: plugins
+    plugins: PLUGINS
 };
